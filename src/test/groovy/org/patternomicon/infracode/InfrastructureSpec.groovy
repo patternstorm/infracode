@@ -17,7 +17,7 @@ class InfrastructureSpec extends Specification {
         environments.size() == 0
     }
 
-    def "an infrastucture can be extended with a new environment" () {
+    def "add a new environment to an infrastucture" () {
         given:
         Infrastructure infra = new Infrastructure()
         Environment dev = new AnyEnvironment()
@@ -29,7 +29,7 @@ class InfrastructureSpec extends Specification {
         infra.getEnvironments().contains(dev)
     }
 
-    def "an infrastucture cannot be extended with an environment it already contains" () {
+    def "an environment cannot be added twice to an infrastucture" () {
         given:
         Infrastructure infra = new Infrastructure()
         Environment dev = new AnyEnvironment()
