@@ -1,4 +1,4 @@
-package org.patternomicon.infracode.clients
+package org.patternomicon.infracode.paas.docker
 
 import retrofit2.Call
 import retrofit2.Response
@@ -6,31 +6,31 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 
-interface DockerService {
+interface Service {
     @GET("/version")
-    Call<DockerVersion> getVersion()
+    Call<Version> getVersion()
 }
 
-class DockerVersion {
+class Version {
     String Os
 }
 
-class DockerClient {
+class Client {
     String url
-    DockerService service
+    Service service
 
-    DockerClient(String url) {
+    Client(String url) {
         this.url = url
         this.service = new Retrofit.Builder().baseUrl(url).
                 addConverterFactory(GsonConverterFactory.create()).
                 build().
-                create(DockerService.class)
+                create(Service.class)
     }
 
-    DockerVersion getVersion() {
-        Call<DockerVersion> callSync = service.getVersion()
+    Version getVersion() {
+        Call<Version> callSync = service.getVersion()
         try {
-            Response<DockerVersion> response = callSync.execute()
+            Response<Version> response = callSync.execute()
             response.body()
         } catch (Exception ex) {
             throw ex
