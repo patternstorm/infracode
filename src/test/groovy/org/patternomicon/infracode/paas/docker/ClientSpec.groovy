@@ -1,6 +1,8 @@
 package org.patternomicon.infracode.paas.docker
 
 import org.patternomicon.infracode.Component
+import org.patternomicon.infracode.paas.docker.model.Image
+import org.patternomicon.infracode.paas.docker.model.Version
 import spock.lang.*
 
 class ClientSpec extends Specification {

@@ -1,7 +1,10 @@
 package org.patternomicon.infracode.paas.docker
 
+import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import org.patternomicon.infracode.Component
+import org.patternomicon.infracode.paas.docker.model.Image
+import org.patternomicon.infracode.paas.docker.model.Version
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -10,17 +13,15 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
+import java.util.concurrent.TimeUnit
+
 interface Service {
     @GET("/version")
     Call<Version> getVersion()
     @POST("/build")
-    Call<Void> createImage(@Query("remote") String dockerFileURI, @Query("t") String tag)
+    Call<ResponseBody> createImage(@Query("remote") String dockerFileURI, @Query("t") String tag)
     @GET("/images/json")
     Call<Image[]> getImage(@Query("filters") String name)
-}
-
-class Version {
-    String Os
 }
 
 
@@ -35,7 +36,13 @@ class Client {
 
     Client(String url) {
         this.url = url
+//        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+//                .connectTimeout(60, TimeUnit.SECONDS)
+//                .readTimeout(60, TimeUnit.SECONDS)
+//                .writeTimeout(60, TimeUnit.SECONDS)
+//                .build();
         this.service = new Retrofit.Builder().baseUrl(url).
+              //  client(okHttpClient).
                 addConverterFactory(GsonConverterFactory.create()).
                 build().
                 create(Service.class)
@@ -53,7 +60,7 @@ class Client {
     }
 
     void createImage(Component component) {
-        Call<Void> callSync = service.createImage(component.source, component.getTag())
+        Call<ResponseBody> callSync = service.createImage(component.source, component.getTag())
         try {
             def response = callSync.execute()
             if (!response.isSuccessful()) throw new Error(body: response.errorBody())
