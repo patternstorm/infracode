@@ -4,5 +4,5 @@ class Component {
     UUID uuid = UUID.randomUUID()
     String name
     String source
-    String getTag() { name +":"+ uuid}
+    String getTag() {name +":"+ uuid}
 }
