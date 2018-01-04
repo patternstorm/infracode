@@ -8,7 +8,7 @@ import spock.lang.*
 class ServiceSpec extends Specification {
     def url = "http://localhost:2376/"
 
-    def "get the docker version"() {
+    def "successful request to get the docker version"() {
         given:
         def docker = new Service(url)
         when:
@@ -17,7 +17,19 @@ class ServiceSpec extends Specification {
         version.Os == "linux"
     }
 
-    def "build a component's docker image"() {
+    def "failed request to build a component's docker image due to Dockerfile not found"() {
+        given:
+        def docker = new Service(url)
+        def dockerFile = ""
+        Component nginx = new Component(name: "nginx", source: dockerFile)
+        when:
+        docker.createImage(nginx)
+        then:
+        def error = thrown(Error)
+        error.message == "Cannot locate specified Dockerfile: Dockerfile"
+    }
+
+    def "successful request to build a component's docker image"() {
         given:
         def docker = new Service(url)
         def dockerFile = "https://raw.githubusercontent.com/patternstorm/infracode/master/src/test/resources/Dockerfile"
