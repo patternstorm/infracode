@@ -1,8 +1,8 @@
 package org.patternomicon.infracode
 
-class Component {
-    UUID uuid = UUID.randomUUID()
-    String name
-    String source
-    String getTag() {name +":"+ uuid}
+trait Component {
+    abstract UUID getUuid()
+    abstract String getName()
+    abstract String getSource()
+    String getTag() {getName() +":"+ getUuid()}
 }

@@ -4,11 +4,17 @@ import spock.lang.*
 
 class InfrastructureSpec extends Specification {
 
-    class AnyEnvironment implements Environment {}
+    @Singleton
+    class AnInfrastructure implements Infrastructure {
+
+    }
+
+    @Singleton
+    class AnEnvironment implements Environment {}
 
     def "an infrastructure is created with no environments" () {
         given:
-        Infrastructure infra = new Infrastructure()
+        Infrastructure infra = AnInfrastructure.instance
 
         when:
         def environments = infra.getEnvironments()
@@ -19,8 +25,8 @@ class InfrastructureSpec extends Specification {
 
     def "add a new environment to an infrastucture" () {
         given:
-        Infrastructure infra = new Infrastructure()
-        Environment dev = new AnyEnvironment()
+        Infrastructure infra = AnInfrastructure.instance
+        Environment dev = AnEnvironment.instance
 
         when:
         infra.addEnvironment(dev)
@@ -31,8 +37,8 @@ class InfrastructureSpec extends Specification {
 
     def "an environment cannot be added twice to an infrastucture" () {
         given:
-        Infrastructure infra = new Infrastructure()
-        Environment dev = new AnyEnvironment()
+        Infrastructure infra = AnInfrastructure.instance
+        Environment dev = AnEnvironment.instance
         infra.addEnvironment(dev)
 
         when:
