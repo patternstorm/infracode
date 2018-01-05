@@ -1,6 +1,8 @@
 package org.patternomicon.infracode.paas.docker
 
 import org.patternomicon.infracode.Component
+import org.patternomicon.infracode.ComponentInstance
+import org.patternomicon.infracode.paas.docker.model.Container
 import org.patternomicon.infracode.paas.docker.model.Image
 import org.patternomicon.infracode.paas.docker.model.Version
 import spock.lang.*
@@ -53,5 +55,17 @@ class ServiceSpec extends Specification {
         Image image = docker.getImage(nginx)
         then:
         image.RepoTags[0] == nginx.getTag()
+    }
+
+    def "succesful request to create a component's instance"() {
+        given:
+        def docker = new Service(url)
+        Component nginx = NginxComponent.instance
+        when:
+        ComponentInstance nginxproc = docker.createContainer(nginx)
+        Container container = docker.getContainer(nginxproc)
+        then:
+        container.Config.Image == nginxproc.component.getTag()
+        container.Id == nginxproc.id
     }
 }
