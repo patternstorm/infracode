@@ -1,5 +1,6 @@
 package org.patternomicon.infracode.paas.docker
 
+import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import org.patternomicon.infracode.Component
 import org.patternomicon.infracode.paas.docker.model.Image
@@ -9,6 +10,8 @@ import retrofit2.Converter
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
+import java.util.concurrent.TimeUnit
 
 
 class Service {
@@ -23,7 +26,11 @@ class Service {
 
     Service(String url) {
         this.url = url
+        OkHttpClient httpClient = new OkHttpClient.Builder().
+                connectTimeout(100, TimeUnit.SECONDS).
+                build()
         this.retrofit = new Retrofit.Builder().baseUrl(url).
+                client(httpClient).
                 addConverterFactory(GsonConverterFactory.create()).
                 build()
         this.client = retrofit.create(Client.class)
